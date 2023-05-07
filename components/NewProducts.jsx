@@ -6,8 +6,8 @@ import ProductBox from "./ProductBox";
 const ProductsGrid = styled.div`
 	display: grid;
 	grid-template-columns: repeat(4, 1fr); //repeat(4, 1fr)
-	gap: 20px;
-	padding-top: 20px;
+	gap: 40px;
+	padding-top: 40px;
 `;
 
 const NewProducts = ({ product }) => {

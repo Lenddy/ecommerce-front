@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import Button from "./Button";
+import CartIcon from "./icons/CartIcon";
 
 const ProductWrapper = styled.div``;
 
@@ -25,6 +26,22 @@ const Name = styled.h2`
 	margin: 0;
 `;
 
+const ProductInfoBox = styled.div`
+	margin-top: 5px;
+`;
+
+const PriceRow = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-top: 2px;
+`;
+
+const Price = styled.div`
+	font-size: 1.5rem;
+	font-weight: bold;
+`;
+
 const ProductBox = ({ _id, name, description, price, images }) => {
 	return (
 		<ProductWrapper>
@@ -33,8 +50,15 @@ const ProductBox = ({ _id, name, description, price, images }) => {
 					<img src={images[0]} alt={name} />
 				</div>
 			</WhiteBox>
-			<Name>{name}</Name>
-			<Button primary>Add to cart</Button>
+			<ProductInfoBox>
+				<Name>{name}</Name>
+				<PriceRow>
+					<Price>${price}</Price>
+					<Button primary outline>
+						Add to cart
+					</Button>
+				</PriceRow>
+			</ProductInfoBox>
 		</ProductWrapper>
 	);
 };
