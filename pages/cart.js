@@ -166,7 +166,7 @@ export default function CartPage() {
 					{!!cartProducts?.length && (
 						<Box>
 							<h2>Order Information</h2>
-							<from method="post" action="/api/checkout">
+							<form method="post" action="/api/checkout">
 								<Input
 									type="text"
 									placeholder="Name"
@@ -225,7 +225,7 @@ export default function CartPage() {
 								<Button size={"l"} block black type="submit">
 									Continue to payment
 								</Button>
-							</from>
+							</form>
 						</Box>
 					)}
 				</ColumnsWrappers>
