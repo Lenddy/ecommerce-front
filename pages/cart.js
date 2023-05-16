@@ -86,6 +86,41 @@ export default function CartPage() {
 		total += price;
 	}
 
+	const goToPayment = async () => {
+		const res = await axios.post("/api/checkout", {
+			name,
+			email,
+			city,
+			postalCode,
+			streetAddress,
+			country,
+			cartProducts,
+		});
+		if (res.data.url) {
+			window.location = res.data.url;
+		}
+	};
+
+	if (window.location.href.includes("success")) {
+		return (
+			<>
+				<Header>
+					<Center>
+						<ColumnsWrappers>
+							<Box>
+								<h1>Thanks for your order!</h1>
+								<p>
+									We Will email you when your order will be
+									sent.
+								</p>
+							</Box>
+						</ColumnsWrappers>
+					</Center>
+				</Header>
+			</>
+		);
+	}
+
 	return (
 		<>
 			<Header />
@@ -166,66 +201,62 @@ export default function CartPage() {
 					{!!cartProducts?.length && (
 						<Box>
 							<h2>Order Information</h2>
-							<form method="post" action="/api/checkout">
+							<Input
+								type="text"
+								placeholder="Name"
+								value={name}
+								name="name"
+								onChange={(e) => setName(e.target.value)}
+							/>
+							<Input
+								type="text"
+								placeholder="Email"
+								value={email}
+								name="email"
+								onChange={(e) => setEmail(e.target.value)}
+							/>
+							<CityHolder>
 								<Input
 									type="text"
-									placeholder="Name"
-									value={name}
-									name="name"
-									onChange={(e) => setName(e.target.value)}
+									placeholder="City"
+									value={city}
+									name="city"
+									onChange={(e) => setCity(e.target.value)}
 								/>
 								<Input
 									type="text"
-									placeholder="Email"
-									value={email}
-									name="email"
-									onChange={(e) => setEmail(e.target.value)}
-								/>
-								<CityHolder>
-									<Input
-										type="text"
-										placeholder="City"
-										value={city}
-										name="city"
-										onChange={(e) =>
-											setCity(e.target.value)
-										}
-									/>
-									<Input
-										type="text"
-										placeholder="Postal code"
-										value={postalCode}
-										name="postalCode"
-										onChange={(e) =>
-											setPostalCode(e.target.value)
-										}
-									/>
-								</CityHolder>
-								<Input
-									type="text"
-									placeholder="Street Address"
-									value={streetAddress}
-									name="streetAddress"
+									placeholder="Postal code"
+									value={postalCode}
+									name="postalCode"
 									onChange={(e) =>
-										setStreetAddress(e.target.value)
+										setPostalCode(e.target.value)
 									}
 								/>
-								<Input
-									type="text"
-									placeholder="Country"
-									value={country}
-									name="country"
-									onChange={(e) => setCountry(e.target.value)}
-								/>
-								<input
-									type="hidden"
-									value={cartProducts.join(",")}
-									name="products"
-								/>
-								<Button size={"l"} block black type="submit">
-									Continue to payment
-								</Button>
-							</form>
+							</CityHolder>
+							<Input
+								type="text"
+								placeholder="Street Address"
+								value={streetAddress}
+								name="streetAddress"
+								onChange={(e) =>
+									setStreetAddress(e.target.value)
+								}
+							/>
+							<Input
+								type="text"
+								placeholder="Country"
+								value={country}
+								name="country"
+								onChange={(e) => setCountry(e.target.value)}
+							/>
+							<Button
+								size={"l"}
+								block
+								black
+								onClick={goToPayment}
+							>
+								Continue to payment
+							</Button>
 						</Box>
 					)}
 				</ColumnsWrappers>

@@ -1,4 +1,4 @@
-import mongoose, { Schema, model, models } from "mongoose";
+import { Schema, model, models } from "mongoose";
 
 const OrderSchema = new Schema(
 	{
@@ -7,12 +7,13 @@ const OrderSchema = new Schema(
 		email: String,
 		city: String,
 		postalCode: String,
-		streeaddress: String,
-		name: String,
+		streetAddress: String,
+		country: String,
+		paid: Boolean,
 	},
 	{ timestamps: true }
 );
 
-export const Product = models.Product || model("Product", ProductsSchema);
+export const Order = models?.Order || model("Order", OrderSchema);
 
-// module.exports = Product;
+// module.exports = Order;

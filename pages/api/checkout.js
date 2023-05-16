@@ -1,5 +1,7 @@
 import { mongooseConnect } from "@/lib/mongoose";
+import { Order } from "@/models/Order";
 import { Product } from "@/models/Product";
+const stripe = require("stripe")(process.env.STRIPE_SK);
 
 export default async function handler(req, res) {
 	if (req.method !== "POST") {
@@ -7,12 +9,18 @@ export default async function handler(req, res) {
 		return;
 	}
 
-	const { name, email, city, postalCode, streetAddress, country, products } =
-		req.body;
-	const productIds = products.split(",");
-	const uniqueIds = [...new Set(productIds)];
-
+	const {
+		name,
+		email,
+		city,
+		postalCode,
+		streetAddress,
+		country,
+		cartProducts,
+	} = req.body;
 	await mongooseConnect();
+	const productIds = cartProducts;
+	const uniqueIds = [...new Set(productIds)];
 	const productsInfos = await Product.find({ _id: uniqueIds });
 
 	let line_items = [];
@@ -23,13 +31,37 @@ export default async function handler(req, res) {
 		const quantity = productIds.filter((id) => id === producId).length || 0;
 		if (quantity > 0 && productInfo) {
 			line_items.push({
+				quantity,
 				price_data: {
 					currency: "USD",
 					product_data: { name: productInfo.name }, //productInfo.fieldNameHere
-					unit_amount: quantity * productInfo.price,
+					unit_amount: quantity * productInfo.price * 100,
 				},
 			});
 		}
 	}
-	res.json({ line_items });
+	const orderDoc = await Order.create({
+		line_items,
+		name,
+		email,
+		city,
+		postalCode,
+		streetAddress,
+		country,
+		paid: false,
+	});
+
+	const session = await stripe.checkout.sessions.create({
+		line_items,
+		mode: "payment",
+		customer_email: email,
+		success_url: process.env.PUBLIC_URL + "/cart?success=1",
+		cancel_url: process.env.PUBLIC_URL + "/cart?cancel=1",
+		metadata: { orderId: orderDoc._id.toString() },
+	});
+
+	res.json({
+		url: session.url,
+	});
+	// res.json(line_items);
 }
