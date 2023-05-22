@@ -33,7 +33,7 @@ const ProductImageBox = styled.div`
 	// border: 1px solid rgba(0, 0, 0, 0.1);
 	border-radius: 10px;
 	display: flex;
-	align-item: center;
+	align-items: center;
 	justify-content: center;
 	img {
 		max-width: 80px;
@@ -81,11 +81,6 @@ export default function CartPage() {
 
 	let total = 0;
 
-	for (const productId of cartProducts) {
-		const price = products.find((p) => p._id === productId)?.price || 0;
-		total += price;
-	}
-
 	const goToPayment = async () => {
 		const res = await axios.post("/api/checkout", {
 			name,
@@ -97,26 +92,32 @@ export default function CartPage() {
 			cartProducts,
 		});
 		if (res.data.url) {
+			console.log((window.location = res.data.url));
 			window.location = res.data.url;
 		}
 	};
 
+	for (const productId of cartProducts) {
+		const price = products.find((p) => p._id === productId)?.price || 0;
+		total += price;
+	}
+
+	// useEffect(() => {
+	// }, []);
 	if (window.location.href.includes("success")) {
 		return (
 			<>
-				<Header>
-					<Center>
-						<ColumnsWrappers>
-							<Box>
-								<h1>Thanks for your order!</h1>
-								<p>
-									We Will email you when your order will be
-									sent.
-								</p>
-							</Box>
-						</ColumnsWrappers>
-					</Center>
-				</Header>
+				<Header />
+				<Center>
+					<ColumnsWrappers>
+						<Box>
+							<h1>Thanks for your order!</h1>
+							<p>
+								We Will email you when your order will be sent.
+							</p>
+						</Box>
+					</ColumnsWrappers>
+				</Center>
 			</>
 		);
 	}
@@ -159,8 +160,7 @@ export default function CartPage() {
 														)
 													}
 												>
-													{" "}
-													-{" "}
+													-
 												</Button>
 												<QuantityLabel>
 													{

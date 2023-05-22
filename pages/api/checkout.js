@@ -63,5 +63,5 @@ export default async function handler(req, res) {
 	res.json({
 		url: session.url,
 	});
-	// res.json(line_items);
+	// res.json({ line_items });
 }
