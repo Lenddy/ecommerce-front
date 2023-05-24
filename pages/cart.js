@@ -51,7 +51,8 @@ const CityHolder = styled.div`
 `;
 
 export default function CartPage() {
-	const { cartProducts, addProduct, removeProduct } = useContext(CartContext);
+	const { cartProducts, addProduct, removeProduct, clearCart } =
+		useContext(CartContext);
 	const [products, setProducts] = useState([]);
 	const [name, setName] = useState("");
 	const [email, setEmail] = useState("");
@@ -70,6 +71,12 @@ export default function CartPage() {
 				.catch((err) => console.log("err", err));
 		} else setProducts([]);
 	}, [cartProducts]);
+
+	useEffect(() => {
+		if (window.location.href.includes("success")) {
+			clearCart();
+		}
+	}, []);
 
 	const moreOfThisProduct = (id) => {
 		addProduct(id);
